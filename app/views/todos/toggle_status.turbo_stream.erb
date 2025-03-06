@@ -1,0 +1,5 @@
+<turbo-stream action="replace" target="<%= dom_id(@todo) %>">
+  <template>
+    <%= render partial: "todos/todo", formats: [:html], collection: @todos %>
+  </template>
+</turbo-stream>

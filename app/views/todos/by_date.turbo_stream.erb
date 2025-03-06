@@ -1,0 +1,17 @@
+<!-- app/views/todos/by_date.turbo_stream.erb -->
+<turbo-stream action="replace" target="todos_frame">
+  <template>
+    <turbo-frame id="todos_frame">
+      <div id="page_heading">
+        <h1 class="text-xl font-bold mb-4">Todos for <%= @date.strftime('%B %d, %Y') %></h1>
+      </div>
+
+      <% if @todos.any? %>
+        <%= render partial: "todos/todo", formats: [:html], collection: @todos %>
+      <% else %>
+        <p class="text-gray-500">No todos for this day.</p>
+      <% end %>
+    </turbo-frame>
+  </template>
+</turbo-stream>
+

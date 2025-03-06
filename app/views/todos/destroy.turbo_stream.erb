@@ -1,0 +1,34 @@
+<!-- app/views/todos/destroy.turbo_stream.erb -->
+<turbo-stream action="remove" target="<%= dom_id(@todo) %>"></turbo-stream>
+
+<!-- Update the todos_frame if empty -->
+<turbo-stream action="update" target="todos_frame">
+  <template>
+    <turbo-frame id="todos_frame">
+      <% if @todos.any? %>
+        <%= render partial: "todos/todo", formats: [:html], collection: @todos %>
+      <% else %>
+        <div id="empty-todos-message">
+          <p class="text-gray-500">No todos for this day.</p>
+        </div>
+      <% end %>
+    </turbo-frame>
+  </template>
+</turbo-stream>
+
+<!-- Show flash message -->
+<turbo-stream action="update" target="flash_messages">
+  <template>
+    <div data-controller="flash" class="flash flash-success">
+      Todo deleted successfully.
+      <button data-action="click->flash#dismiss" class="flash-close">&times;</button>
+    </div>
+  </template>
+</turbo-stream>
+
+<!-- ✅ Ensure modal turbo-frame exists after deletion -->
+<turbo-stream action="update" target="modal">
+  <template>
+    <turbo-frame id="modal" data-controller="modal"></turbo-frame>
+  </template>
+</turbo-stream>

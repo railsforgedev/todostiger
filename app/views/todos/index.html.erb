@@ -1,19 +1,28 @@
-<!-- app/views/todos/index.html.erb -->
 <div class="max-w-2xl mx-auto p-4">
-  <h1 class="text-xl font-bold mb-4">Todos for <%= @date.strftime('%B %d, %Y') %></h1>
-
-  <div class="flex justify-between mb-4">
-    <%= link_to "← Yesterday", by_date_todos_path(date: @date - 1.day), class: "text-blue-500", data: { turbo_frame: "todos_frame" } if @date > Date.current - 7.days %>
-    <%= link_to "Today", todos_path, class: "text-blue-500" if @date != Date.current %>
-    <%= link_to "Tomorrow →", by_date_todos_path(date: @date + 1.day), class: "text-blue-500", data: { turbo_frame: "todos_frame" } if @date < Date.current + 7.days %>
-  </div>
-
   <turbo-frame id="todos_frame">
-    <%= render @todos %>
+    <!-- Navigation inside turbo-frame so it updates dynamically -->
+    <div class="flex justify-between mb-4">
+      <%= link_to "← Yesterday", by_date_todos_path(date: @date - 1.day), class: "text-blue-500", data: { turbo_frame: "todos_frame" } if @date > Date.current - 7.days %>
+
+      <% if @date != Date.current %>
+        <%= link_to "Today", by_date_todos_path(date: Date.current), class: "text-blue-500", data: { turbo_frame: "todos_frame" } %>
+      <% end %>
+
+      <%= link_to "Tomorrow →", by_date_todos_path(date: @date + 1.day), class: "text-blue-500", data: { turbo_frame: "todos_frame" } if @date < Date.current + 7.days %>
+    </div>
+
+    <div id="page_heading">
+      <h1 class="text-xl font-bold mb-4">Todos for <%= @date.strftime('%B %d, %Y') %></h1>
+    </div>
+
+    <% if @todos.any? %>
+      <%= render @todos %>
+    <% else %>
+      <p class="text-gray-500">No todos for this day.</p>
+    <% end %>
   </turbo-frame>
 
   <%= link_to "New Todo", new_todo_path, class: "mt-4 block text-blue-500", data: { turbo_frame: "modal" } %>
 </div>
 
 <turbo-frame id="modal" data-controller="modal"></turbo-frame>
-

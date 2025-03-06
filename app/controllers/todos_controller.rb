@@ -1,6 +1,7 @@
 # app/controllers/todos_controller.rb
 class TodosController < ApplicationController
   before_action :set_todo, only: [:show, :edit, :update, :destroy]
+  before_action :restrict_past_changes, only: [:create, :destroy]
 
   def index
     @todos = Todo.today
@@ -8,17 +9,13 @@ class TodosController < ApplicationController
   end
 
   def by_date
-    @date = Date.parse(params[:date])
+    @date = params[:date].present? ? Date.parse(params[:date]) : Date.today
+    @todos = Todo.where(due_date: @date)
 
-    # Ensure we're only allowing navigation within the 7-day limit
-    today = Date.current
-    if @date < (today - 7.days) || @date > (today + 7.days)
-      redirect_to todos_path, alert: "You can only view todos within 7 days of today."
-      return
+    respond_to do |format|
+      format.turbo_stream
+      format.html { render :index, locals: { date: @date } }
     end
-
-    @todos = Todo.for_date(@date)
-    render :index
   end
 
   def show
@@ -43,6 +40,7 @@ class TodosController < ApplicationController
 
   def create
     @todo = Todo.new(todo_params)
+    @todo.due_date = Date.tomorrow if @todo.due_date > Date.today
 
     if @todo.save
       respond_to do |format|
@@ -68,18 +66,42 @@ class TodosController < ApplicationController
     end
   end
 
-  def destroy
-    @todo.destroy
+  def toggle_status
+    @todo = Todo.find(params[:id])
+    @todo.update(status: params[:status])
 
     respond_to do |format|
-      format.html { redirect_to todos_path, notice: "Todo was successfully deleted." }
       format.turbo_stream
+      format.json { render json: { success: true } }
+    end
+  end
+
+  def destroy
+    @todo = Todo.find(params[:id])
+    date = @todo.created_at.to_date # Ensure we track the correct day's todos
+    @todo.destroy
+
+    @todos = Todo.where("DATE(created_at) = ?", date) # Fetch remaining todos for that day
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to todos_path, notice: "Todo deleted successfully." }
     end
   end
 
   private
     def set_todo
       @todo = Todo.find(params[:id])
+    end
+
+    def restrict_past_changes
+      date = params[:date] ? Date.parse(params[:date]) : Date.today
+      if date < Date.today
+        respond_to do |format|
+          format.html { redirect_to todos_path, alert: "You cannot modify past todos." }
+          format.turbo_stream { render turbo_stream: turbo_stream.replace("flash_messages", partial: "shared/flash", locals: { message: "You cannot modify past todos.", type: :error }) }
+        end
+      end
     end
 
     def todo_params

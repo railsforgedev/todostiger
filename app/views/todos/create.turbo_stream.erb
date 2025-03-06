@@ -5,4 +5,22 @@
   </template>
 </turbo-stream>
 
-<turbo-stream action="remove" target="modal"></turbo-stream>
+<!-- Show flash message -->
+<turbo-stream action="update" target="flash_messages">
+  <template>
+    <div data-controller="flash" class="flash flash-success">
+      Todo created successfully.
+      <button data-action="click->flash#dismiss" class="flash-close">&times;</button>
+    </div>
+  </template>
+</turbo-stream>
+
+<!-- ✅ Ensure modal turbo-frame exists after deletion -->
+<turbo-stream action="update" target="modal">
+  <template>
+    <turbo-frame id="modal" data-controller="modal"></turbo-frame>
+  </template>
+</turbo-stream>
+
+<!-- ✅ Remove the empty message if it exists -->
+<turbo-stream action="remove" target="empty-todos-message"></turbo-stream>
