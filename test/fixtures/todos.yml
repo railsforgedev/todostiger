@@ -1,0 +1,30 @@
+# test/fixtures/todos.yml
+today:
+  title: Today's Todo
+  status: 0 # pending
+  priority: 1 # medium
+  due_date: <%= Date.current %>
+
+yesterday:
+  title: Yesterday's Todo
+  status: 0 # pending
+  priority: 1 # medium
+  due_date: <%= Date.current - 1.day %>
+
+tomorrow:
+  title: Tomorrow's Todo
+  status: 0 # pending
+  priority: 1 # medium
+  due_date: <%= Date.current + 1.day %>
+
+completed:
+  title: Completed Todo
+  status: 2 # completed
+  priority: 1 # medium
+  due_date: <%= Date.current %>
+
+urgent:
+  title: Urgent Todo
+  status: 0 # pending
+  priority: 3 # urgent
+  due_date: <%= Date.current %>

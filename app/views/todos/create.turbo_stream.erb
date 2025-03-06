@@ -1,0 +1,8 @@
+<!-- app/views/todos/create.turbo_stream.erb -->
+<turbo-stream action="append" target="todos_frame">
+  <template>
+    <%= render partial: "todos/todo", formats: [:html], locals: { todo: @todo } %>
+  </template>
+</turbo-stream>
+
+<turbo-stream action="remove" target="modal"></turbo-stream>

@@ -24,6 +24,15 @@
 
   <body>
     <main class="container mx-auto mt-28 px-5 flex">
+      <div id="flash_messages" class="fixed top-4 right-4 z-50">
+        <% flash.each do |type, message| %>
+          <div data-controller="flash"
+              class="flash <%= flash_class(type) %>">
+            <%= message %>
+            <button data-action="click->flash#dismiss" class="flash-close">&times;</button>
+          </div>
+        <% end %>
+      </div>
       <%= yield %>
     </main>
   </body>

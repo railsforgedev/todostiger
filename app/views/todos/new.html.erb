@@ -1,0 +1,7 @@
+<!-- app/views/todos/new.html.erb -->
+<turbo-frame id="modal">
+  <div class="bg-white p-4 shadow-lg rounded-md">
+    <h2 class="text-lg font-bold mb-4">New Todo</h2>
+    <%= render "todos/form", todo: @todo %>
+  </div>
+</turbo-frame>

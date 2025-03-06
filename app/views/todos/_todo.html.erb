@@ -1,0 +1,12 @@
+<turbo-frame id="<%= dom_id(todo) %>">
+  <div class="p-2 border-b flex justify-between items-center">
+    <div>
+      <strong><%= todo.title %></strong>
+      <span class="text-sm text-gray-500">(<%= todo.status.humanize %>, <%= todo.priority.humanize %>)</span>
+    </div>
+    <div class="flex space-x-2">
+      <%= link_to "Edit", edit_todo_path(todo), data: { turbo_frame: "modal" }, class: "text-blue-500" %>
+      <%= link_to "Delete", todo, method: :delete, data: { turbo_confirm: "Are you sure?", turbo_frame: "todos_frame" }, class: "text-red-500" %>
+    </div>
+  </div>
+</turbo-frame>

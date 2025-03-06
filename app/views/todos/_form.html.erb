@@ -1,0 +1,37 @@
+<turbo-frame id="<%= dom_id(@todo) %>">
+  <% if todo.errors.any? %>
+    <div class="error-messages">
+      <ul>
+        <% todo.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <%= form_with model: todo, url: todo.persisted? ? todo_path(todo) : todos_path, method: todo.persisted? ? :patch : :post, data: { turbo_frame: "todos_frame" } do |form| %>
+    <div class="mb-2">
+      <%= form.label :title, "Title", class: "block font-medium" %>
+      <%= form.text_field :title, class: "w-full p-2 border rounded" %>
+    </div>
+    <div class="mb-2">
+      <%= form.label :description, "Description", class: "block font-medium" %>
+      <%= form.rich_text_area :description, class: "w-full p-2 border rounded" %>
+    </div>
+    <div class="mb-2">
+      <%= form.label :status, "Status", class: "block font-medium" %>
+      <%= form.select :status, Todo.statuses.keys.map { |s| [s.humanize, s] }, {}, class: "w-full p-2 border rounded" %>
+    </div>
+    <div class="mb-2">
+      <%= form.label :priority, "Priority", class: "block font-medium" %>
+      <%= form.select :priority, Todo.priorities.keys.map { |p| [p.humanize, p] }, {}, class: "w-full p-2 border rounded" %>
+    </div>
+    <div class="mb-2">
+      <%= form.label :due_date, "Due Date", class: "block font-medium" %>
+      <%= form.date_field :due_date, value: Date.current, class: "w-full p-2 border rounded" %>
+    </div>
+    <div class="flex justify-end mt-4 space-x-2">
+      <a href="#" class="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer" data-action="click->modal#close">Cancel</a>
+      <%= form.submit todo.persisted? ? "Update Todo" : "Create Todo", class: "bg-blue-500 text-white px-4 py-2 rounded" %>
+    </div>
+  <% end %>
+</turbo-frame>

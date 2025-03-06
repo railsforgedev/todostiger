@@ -1,0 +1,48 @@
+<% if @todo.errors.any? %>
+  <!-- Show validation errors inside the form -->
+  <turbo-stream action="replace" target="modal">
+    <template>
+      <%= render partial: "todos/form", formats: [:html], locals: { todo: @todo } %>
+    </template>
+  </turbo-stream>
+
+  <!-- Show validation errors in the flash message container -->
+  <turbo-stream action="update" target="flash_messages">
+    <template>
+      <div class="flash flash-error">
+        <ul>
+          <% @todo.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    </template>
+  </turbo-stream>
+
+<% else %>
+  <!-- Replace the updated todo in the list -->
+  <turbo-stream action="replace" target="<%= dom_id(@todo) %>">
+    <template>
+      <%= render partial: "todos/todo", formats: [:html], locals: { todo: @todo } %>
+    </template>
+  </turbo-stream>
+
+  <!-- Show success message -->
+  <turbo-stream action="update" target="flash_messages">
+    <template>
+      <div data-controller="flash" class="flash flash-success">
+        Todo updated successfully.
+        <button data-action="click->flash#dismiss" class="flash-close">&times;</button>
+      </div>
+    </template>
+  </turbo-stream>
+
+  <!-- Keep modal open -->
+  <turbo-stream action="update" target="modal">
+    <template>
+      <script>
+        document.getElementById('modal').classList.remove('hidden');
+      </script>
+    </template>
+  </turbo-stream>
+<% end %>
