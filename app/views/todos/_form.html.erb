@@ -27,10 +27,14 @@
     </div>
     <div class="mb-2">
       <%= form.label :due_date, "Due Date", class: "block font-medium" %>
-      <%= form.date_field :due_date, value: Date.current, class: "w-full p-2 border rounded" %>
+      <%= form.date_field :due_date, value: @todo.due_date.strftime('%Y-%m-%d'), class: "w-full p-2 border rounded" %>
     </div>
     <div class="flex justify-end mt-4 space-x-2">
-      <a href="" class="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer" data-action="click->modal#close">Cancel</a>
+      <a href="#" class="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer"
+        data-action="click->modal#close"
+        onclick="event.preventDefault();">
+        Cancel
+      </a>
       <%= form.submit todo.persisted? ? "Update Todo" : "Create Todo", class: "bg-blue-500 text-white px-4 py-2 rounded" %>
     </div>
   <% end %>

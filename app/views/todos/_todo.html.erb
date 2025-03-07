@@ -1,19 +1,24 @@
+<!-- app/views/todos/_todo.html.erb -->
 <turbo-frame id="<%= dom_id(todo) %>" data-controller="todo">
-  <div class="p-2 border-b flex justify-between items-center <%= 'line-through text-gray-500' if todo.completed? %>"
-       data-todo-target="todoItem"
-       data-todo-id="<%= todo.id %>"
-       class="<%= 'line-through text-gray-500' if todo.completed? %>">
+  <div class="p-2 border-b flex justify-between items-center <%= 'line-through text-gray-500' if todo.completed? %>">
+
     <div class="flex items-center">
       <input type="checkbox"
              data-action="todo#toggleStatus"
              data-todo-id="<%= todo.id %>"
-             <%= "checked" if todo.completed? %>>
-      <strong class="ml-2"><%= todo.title %></strong>
-      <span class="text-sm text-gray-500">(<%= todo.status.humanize %>, <%= todo.priority.humanize %>)</span>
+             <%= "checked" if todo.completed? %>
+      >
+
+      <strong class="ml-2 cursor-pointer hover:underline" data-todo-target="todoItem" data-todo-id="<%= todo.id %>" data-action="click->todo#showModal" ><%= todo.title %></strong>
+
+      <span data-todo-target="statusText" class="text-sm text-gray-500">
+        (<%= todo.status.humanize %>, <%= todo.priority.humanize %>)
+      </span>
     </div>
+
     <div class="flex space-x-2">
       <%= link_to "Edit", edit_todo_path(todo), data: { turbo_frame: "modal" }, class: "text-blue-500" %>
-      <%= link_to "Delete", todo_path(todo),
+      <%= link_to "Delete", todo_path(todo, date: @date),
             method: :delete,
             data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
             class: "text-red-500"

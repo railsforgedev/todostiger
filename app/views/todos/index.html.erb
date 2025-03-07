@@ -2,17 +2,23 @@
   <turbo-frame id="todos_frame">
     <!-- Navigation inside turbo-frame so it updates dynamically -->
     <div class="flex justify-between mb-4">
-      <%= link_to "← Yesterday", by_date_todos_path(date: @date - 1.day), class: "text-blue-500", data: { turbo_frame: "todos_frame" } if @date > Date.current - 7.days %>
-
-      <% if @date != Date.current %>
-        <%= link_to "Today", by_date_todos_path(date: Date.current), class: "text-blue-500", data: { turbo_frame: "todos_frame" } %>
+      <% if @date > Date.current - 7.days %>
+        <%= link_to (@date == Date.current ? "← Yesterday" : "← " + (@date - 1.day).strftime('%d/%m/%Y')), by_date_todos_path(date: @date - 1.day), class: "text-blue-500", data: { turbo_frame: "_top" } %>
       <% end %>
 
-      <%= link_to "Tomorrow →", by_date_todos_path(date: @date + 1.day), class: "text-blue-500", data: { turbo_frame: "todos_frame" } if @date < Date.current + 7.days %>
+      <% if @date != Date.current %>
+        <%= link_to "Today", by_date_todos_path(date: Date.current), class: "text-blue-500", data: { turbo_frame: "_top" } %>
+      <% end %>
+
+      <% if @date < Date.current + 7.days %>
+        <%= link_to (@date == Date.current ? "Tomorrow →" : (@date + 1.day).strftime('%d/%m/%Y') + " →"), by_date_todos_path(date: @date + 1.day), class: "text-blue-500", data: { turbo_frame: "_top" } %>
+      <% end %>
     </div>
 
     <div id="page_heading">
-      <h1 class="text-xl font-bold mb-4">Todos for <%= @date.strftime('%B %d, %Y') %></h1>
+      <h1 class="text-xl font-bold mb-4">
+        Todos for <%= @date == Date.current ? "Today" : @date.strftime('%d/%m/%Y') %>
+      </h1>
     </div>
 
     <% if @todos.any? %>
@@ -22,7 +28,7 @@
     <% end %>
   </turbo-frame>
 
-  <%= link_to "New Todo", new_todo_path, class: "mt-4 block text-blue-500", data: { turbo_frame: "modal" } %>
+  <%= link_to "New Todo", new_todo_path(date: @date.strftime('%Y-%m-%d')), class: "mt-4 block text-blue-500", data: { turbo_frame: "modal" } %>
 </div>
 
-<turbo-frame id="modal" data-controller="modal"></turbo-frame>
+<turbo-frame id="modal" class="max-w-md lg:max-w-lg lg:max-w-xl xl:max-w-2xl" data-controller="modal"></turbo-frame>
