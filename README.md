@@ -1,24 +1,17 @@
-# README
+# TodosTiger
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+**TodosTiger** is a fully working SPA (Single Page Application) built using Ruby on Rails version 8 and Hotwire. It uses TurboFrames and TurboStreams with Stimulus Controllers to do CRUD operations on Todos. The UI is built with TailwindCSS version 4.
 
-Things you may want to cover:
+## Screenshots
 
-* Ruby version
+**Homepage** - Lists all Todos for the date - starts from Today. You can see Todos for 7 days in Past and Future.
 
-* System dependencies
+![image](https://github.com/user-attachments/assets/d8dfeb67-4c7f-49c8-986b-f1842fdce603)
 
-* Configuration
+**Create a New Todo**
 
-* Database creation
+![image](https://github.com/user-attachments/assets/ff5daf5a-3a75-461b-95e4-8b21dd6f9f43)
 
-* Database initialization
+**See Description of a Todo**
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+![image](https://github.com/user-attachments/assets/3d31da1a-8efd-49e1-a09e-0f2d582655ef)
