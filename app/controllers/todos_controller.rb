@@ -8,6 +8,12 @@ class TodosController < ApplicationController
     end
 
     @date = Date.parse(params[:date])
+
+    # Redirect if the date is outside the allowed 7-day range
+    if (@date - Date.current).abs > 7
+      redirect_to todos_path(date: Date.current), alert: "Date is outside the allowed range." and return
+    end
+
     @todos = Todo.where(due_date: @date)
 
     respond_to do |format|
@@ -18,6 +24,12 @@ class TodosController < ApplicationController
 
   def by_date
     @date = params[:date].present? ? Date.parse(params[:date]) : Date.current
+
+    # Redirect if the date is outside the allowed 7-day range
+    if (@date - Date.current).abs > 7
+      redirect_to todos_path(date: Date.current), alert: "Date is outside the allowed range." and return
+    end
+
     @todos = Todo.where(due_date: @date)
 
     respond_to do |format|
@@ -69,7 +81,7 @@ class TodosController < ApplicationController
       end
     else
       respond_to do |format|
-        format.turbo_stream { render turbo_stream: turbo_stream.replace("modal", partial: "todos/form", locals: { todo: @todo }) }
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("modal", partial: "todos/form", locals: { todo: @todo }), status: :unprocessable_entity }
         format.html { render :edit, status: :unprocessable_entity }
       end
     end

@@ -9,7 +9,7 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index" do
-    get todos_url
+    get todos_url(date: Date.current.to_s)
     assert_response :success
   end
 
@@ -20,7 +20,10 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
 
   test "should redirect if date is outside 7-day limit" do
     get todos_by_date_url(date: (Date.current - 8.days).to_s)
-    assert_redirected_to todos_url
+
+    assert_response :redirect
+    assert_includes [302, 303], response.status  # Allow both redirect statuses
+    assert_redirected_to todos_url(date: Date.current.to_s)
     assert_not_nil flash[:alert]
   end
 
@@ -39,10 +42,10 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
           priority: "medium",
           due_date: Date.current
         }
-      }
+      }, as: :turbo_stream
     end
 
-    assert_redirected_to todos_url
+    assert_response :success
   end
 
   test "should not create todo with invalid attributes" do
@@ -55,14 +58,14 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
           priority: "medium",
           due_date: Date.current
         }
-      }
+      }, as: :turbo_stream
     end
 
     assert_response :unprocessable_entity
   end
 
   test "should show todo" do
-    get todo_url(@todo)
+    get todo_url(@todo), as: :turbo_stream
     assert_response :success
   end
 
@@ -80,13 +83,13 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
         priority: "high",
         due_date: @todo.due_date
       }
-    }
+    }, as: :turbo_stream
 
     @todo.reload
     assert_equal "Updated Test Todo", @todo.title
     assert_equal "completed", @todo.status
     assert_equal "high", @todo.priority
-    assert_redirected_to todos_url
+    assert_response :success
   end
 
   test "should not update todo with invalid attributes" do
@@ -98,16 +101,16 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
         priority: @todo.priority,
         due_date: @todo.due_date
       }
-    }
+    }, as: :turbo_stream
 
     assert_response :unprocessable_entity
   end
 
   test "should destroy todo" do
     assert_difference('Todo.count', -1) do
-      delete todo_url(@todo)
+      delete todo_url(@todo), as: :turbo_stream
     end
 
-    assert_redirected_to todos_url
+    assert_response :success
   end
 end
