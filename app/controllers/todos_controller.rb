@@ -11,7 +11,8 @@ class TodosController < ApplicationController
 
     # Redirect if the date is outside the allowed 7-day range
     if (@date - Date.current).abs > 7
-      redirect_to todos_path(date: Date.current), alert: "Date is outside the allowed range." and return
+      flash[:alert] = "Date is out of range."
+      redirect_to todos_path(date: Date.current) and return
     end
 
     @todos = Todo.where(due_date: @date)
